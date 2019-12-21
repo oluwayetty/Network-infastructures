@@ -1,0 +1,25 @@
+$ORIGIN homework.org.
+$TTL 2d
+@ IN SOA hostname.homework.org. hostmaster.homework.org. (
+        784512832;
+        28;
+        14;
+        3600000;
+        0;
+)
+
+@	IN	NS	hostname
+hostname     IN      A      10.0.2.100
+r1     IN      A       1.0.1.2
+r2     IN      A       1.0.1.4
+r3     IN      A       1.0.1.5
+r4     IN      A       1.0.1.14
+r5     IN      A       1.0.1.11
+r6     IN      A       1.0.1.21
+r7     IN      A       1.0.1.23
+s2     IN      A       10.0.2.100
+s1     IN      A       10.0.1.100
+
+$ORIGIN sub.homework.org.
+@	IN	NS	s1
+s1	IN	A	10.0.1.100

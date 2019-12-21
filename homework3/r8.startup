@@ -1,0 +1,19 @@
+
+/etc/init.d/dhcp3-server start
+
+
+iptables -A FORWARD -m state --state NEW -d 10.0.0.100 -j DROP
+iptables -A OUTPUT -m state --state NEW -d 10.0.0.100 -j DROP
+
+
+ip l set eth0 up
+ip l set eth1 up
+
+ip addr add 1.0.1.19/31 dev eth0
+ip addr add 10.0.0.0/24 dev eth1
+
+
+/etc/init.d/bind restart
+/etc/init.d/quagga restart
+/etc/init.d/ssh start
+

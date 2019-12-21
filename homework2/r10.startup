@@ -1,0 +1,24 @@
+ip l set eth0 up
+ip addr add 1.0.1.31/31 dev eth0
+
+/etc/init.d/quagga restart
+/etc/init.d/ssh start
+
+mkdir /home/user
+useradd user -d /home/user
+chown user:user /home/user
+echo -e 'user\nuser\n' | passwd user
+mkdir /home/user/.ssh
+chown user:user /home/user/.ssh
+chmod 700 /home/user/.ssh
+touch /home/user/.ssh/authorized_keys
+chown user:user /home/user/.ssh/authorized_keys
+chmod 600 /home/user/.ssh/authorized_keys
+until [ -e /hostlab/s2_key.pub ]
+do
+        printf "\033[0;31mUnable to get pubkey! \033[0m \n"
+	sleep 10
+done
+        cat /hostlab/s2_key.pub > /home/user/.ssh/authorized_keys
+        printf "\033[0;32mGot Pubkey! \033[0m \n"
+exit

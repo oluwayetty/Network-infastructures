@@ -1,0 +1,6 @@
+/etc/init.d/networking restart
+/etc/init.d/dhcp3-server start
+
+ip route add 192.168.1.0/24 via 10.0.2.2
+ip route add 10.0.1.0/28 via 10.0.2.5
+ip route add default via 10.0.2.5

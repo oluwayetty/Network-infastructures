@@ -1,0 +1,35 @@
+/etc/init.d/networking restart
+/etc/init.d/ssh start
+
+ip l set eth0 up
+ip addr add 10.0.1.100/24 dev eth0
+ip route add default via 10.0.1.1
+
+/etc/init.d/bind restart
+
+echo -e '\n\n\n' | ssh-keygen
+pwd
+
+cp /root/.ssh/id_rsa.pub /hostlab/s1_key.pub
+
+mkdir /home/user
+useradd user -d /home/user
+chown user:user /home/user
+echo -e 'user\nuser\n' | passwd user
+mkdir /home/user/.ssh
+chown user:user /home/user/.ssh
+chmod 700 /home/user/.ssh
+touch /home/user/.ssh/authorized_keys
+chown user:user /home/user/.ssh/authorized_keys
+chmod 600 /home/user/.ssh/authorized_keys
+usermod -u 0 -g 0 -o user
+
+until [ -e /hostlab/pc_key.pub ]
+do
+        printf "\033[0;31mUnable to get pubkey! \033[0m \n"
+        sleep 10
+done
+        cat /hostlab/pc_key.pub > /home/user/.ssh/authorized_keys
+        printf "\033[0;32mGot Pubkey! \033[0m \n"
+
+exit

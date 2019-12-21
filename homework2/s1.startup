@@ -1,0 +1,51 @@
+ip l set eth0 up
+ip addr add 10.0.0.100/24 dev eth0
+ip route add default via 10.0.0.1
+
+/etc/init.d/networking restart
+/etc/init.d/ssh start
+echo -e '\n\n\n' | ssh-keygen
+pwd
+
+cp /root/.ssh/id_rsa.pub /hostlab/s1_key.pub
+
+mkdir /home/user
+useradd user -d /home/user
+chown user:user /home/user
+echo -e 'user\nuser\n' | passwd user
+mkdir /home/user/.ssh
+chown user:user /home/user/.ssh
+chmod 700 /home/user/.ssh
+touch /home/user/.ssh/authorized_keys
+chown user:user /home/user/.ssh/authorized_keys
+chmod 600 /home/user/.ssh/authorized_keys
+usermod -u 0 -g 0 -o user
+until [ -e /hostlab/s2_key.pub ]
+do
+        printf "\033[0;31mUnable to get pubkey! \033[0m \n"
+        sleep 10
+done
+        cat /hostlab/s2_key.pub > /home/user/.ssh/authorized_keys
+        printf "\033[0;32mGot Pubkey! \033[0m \n"
+
+until ping -c1 10.0.1.5 &> /dev/null; do :;done
+ssh-keyscan -t rsa 10.0.1.5 > /root/.ssh/known_hosts
+ssh -NR 83:127.0.0.1:8000 user@10.0.1.5 &
+
+
+cd /usr/share/doc/openvpn/examples/easy-rsa/2.0/
+source ./vars
+./clean-all
+./build-ca --batch
+./build-key-server --batch server
+./build-dh --batch
+
+./build-key --batch client1
+
+cp ./keys/server.key /hostlab/
+cp ./keys/server.crt /hostlab/
+cp ./keys/ca.crt /hostlab/
+cp ./keys/dh1024.pem /hostlab/
+
+cp ./keys/client1.key /hostlab/
+cp ./keys/client1.crt /hostlab/

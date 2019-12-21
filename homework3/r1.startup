@@ -1,0 +1,16 @@
+ip l set eth0 up
+ip l set eth1 up
+ip l set eth2 up
+ip l set eth3 up
+
+ip addr add 1.0.1.2/31 dev eth0
+ip addr add 1.0.1.12/31 dev eth1
+ip addr add 1.0.1.16/31 dev eth2
+
+iptables -t nat -A POSTROUTING -o eth3 -j MASQUERADE
+
+/etc/init.d/quagga restart
+
+/etc/init.d/ssh start
+
+/etc/init.d/bind restart

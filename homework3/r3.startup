@@ -1,0 +1,14 @@
+ip l set eth0 up
+ip l set eth1 up
+ip l set eth2 up
+ip l set eth3 up
+
+ip addr add 1.0.1.5/31 dev eth0
+ip addr add 1.0.1.6/31 dev eth1
+ip addr add 1.0.1.8/31 dev eth2
+
+/etc/init.d/quagga restart
+
+/etc/init.d/ssh start
+
+/etc/init.d/bind restart
